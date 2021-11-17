@@ -1,0 +1,25 @@
+parameters:
+  jobname: "CD"
+  target: "linux"
+
+jobs:
+- job: linux
+  condition: eq('${{ parameters.target }}', 'linux')
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - checkout: none
+  - script: |
+        echo Hello, Linux!
+    displayName: 'Run a one-line script'
+- job: windows
+  condition: eq('${{ parameters.target }}', 'win')
+  pool:
+    vmImage: windows-latest
+  steps:
+  - checkout: none
+  - task: PowerShell@2
+    inputs:
+      targetType: "inline"
+      script: |
+        Write-Host "Hello, Windows!"

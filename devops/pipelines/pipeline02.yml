@@ -1,0 +1,26 @@
+resources:
+  pipelines:
+  - pipeline: pipeline02
+    source: pipeline01
+    trigger: true
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+ - job:
+   condition: succeeded()
+   steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: 'adoghtest'
+        definition: 'pipeline01'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        artifactName: 'drop'
+        targetPath: '$(Pipeline.Workspace)/s'
+    
+    - script: |
+        cat log.txt
+      displayName: 'Run a one-line script'

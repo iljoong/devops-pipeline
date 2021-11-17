@@ -1,0 +1,53 @@
+{
+    "variables": {
+      "rgname": "test-vmss",
+      "imagename": "agentimage01"
+    },
+    "builders": [{
+      "type": "azure-arm",
+  
+      "client_id": "add here",
+      "client_secret": "add here",
+      "tenant_id": "add here",
+      "subscription_id": "add here",
+  
+      "managed_image_resource_group_name": "{{user `rgname`}}",
+      "managed_image_name": "{{user `imagename`}}",
+  
+      "os_type": "Linux",
+      "image_publisher": "Canonical",
+      "image_offer": "UbuntuServer",
+      "image_sku": "18.04-LTS",
+
+      "os_disk_size_gb": 64,
+  
+      "azure_tags": {
+          "image": "demo"
+      },
+  
+      "location": "koreacentral",
+      "vm_size": "Standard_D2as_v4",
+
+      "async_resourcegroup_delete": "true"
+    }],
+    "provisioners": [
+      {
+        "destination": "/tmp/",
+        "source": "../script/script.sh",
+        "type": "file"
+      },
+      {
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+      "inline": [
+        "apt-get update",
+        "apt-get upgrade -y",
+
+        "chmod +x /tmp/script.sh",
+        "bash /tmp/script.sh",
+  
+        "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
+      ],
+      "inline_shebang": "/bin/sh -x",
+      "type": "shell"
+    }]
+  }

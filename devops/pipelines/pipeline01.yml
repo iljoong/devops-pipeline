@@ -1,0 +1,16 @@
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: |
+    echo Hello, world!
+    echo "test $(Build.BuildId) log" > log.txt
+  displayName: 'Run a one-line script'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)/s/log.txt'
+    artifact: 'drop'
+    publishLocation: 'pipeline'

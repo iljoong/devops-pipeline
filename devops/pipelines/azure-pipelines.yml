@@ -1,0 +1,50 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: build
+  jobs:
+  - template: build.yml
+    parameters:
+      jobName: build
+
+- stage: scan
+  dependsOn: [] # parallel
+  jobs:
+  - job: scan
+    steps:
+    - script: |
+        echo "Scan source code!"
+      displayName: 'Run a one-line script'
+
+- stage: test
+  dependsOn: [build, scan]
+  jobs:
+  - job:
+    steps:
+    - script: |
+        echo Test build!
+      displayName: 'Run a one-line script'
+
+- stage: deploy_linux
+  dependsOn: [test]
+  jobs:
+  - template: deploy.yml
+    parameters:
+      jobName: deploy
+      target: linux
+- stage: deploy_win
+  dependsOn: [test]
+  jobs:
+  - template: deploy.yml
+    parameters:
+      jobName: deploy
+      target: win
