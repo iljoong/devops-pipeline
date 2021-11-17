@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 data "azurerm_resource_group" "tfrg" {
-  name = var.resource.name
+  name = var.resource.rgname
 }
 
 data "azurerm_key_vault" "tfkv" {
@@ -29,7 +29,7 @@ data "azurerm_key_vault_secret" "tfkvpwd" {
 data "azurerm_subnet" "tfvnet" {
   name                 = var.net.subnetname
   virtual_network_name = var.net.vnetname
-  resource_group_name  = var.resource.name
+  resource_group_name  = data.azurerm_resource_group.tfrg.name
 }
 
 data "azurerm_user_assigned_identity" "tfmid" {

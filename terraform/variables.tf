@@ -39,6 +39,7 @@ variable kv {
 
 variable resource {
     default = {
-        name   = "_add_here_"
+        rgname   = "_add_here_"
+        prefix = "agent"
     }
 }
